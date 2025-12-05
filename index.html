@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hugging Face Spaces - Discover</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom Styles for Hugging Face-like aesthetics */
+        :root {
+            --hf-yellow: #FFD21E;
+            --hf-dark: #0B0F19;
+            --hf-gray: #F9FAFB;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #F8F9FA;
+            color: #1F2937;
+        }
+        .sdk-badge-gradio { background-color: #FFF5CC; color: #995200; border: 1px solid #FFD21E; }
+        .sdk-badge-streamlit { background-color: #FFEDED; color: #991B1B; border: 1px solid #FF4B4B; }
+        .sdk-badge-docker { background-color: #E0F2FE; color: #075985; border: 1px solid #38BDF8; }
+        
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Thumbnail Gradients */
+        .thumb-1 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .thumb-2 { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%); }
+        .thumb-3 { background: linear-gradient(120deg, #f6d365 0%, #fda085 100%); }
+        .thumb-4 { background: linear-gradient(to top, #30cfd0 0%, #330867 100%); }
+        .thumb-5 { background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%); }
+        .thumb-6 { background: linear-gradient(to right, #43e97b 0%, #38f9d7 100%); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Navigation -->
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center gap-6">
+                    <!-- Logo Mockup -->
+                    <div class="flex items-center gap-2 cursor-pointer">
+                        <div class="text-3xl">🤗</div>
+                        <span class="font-bold text-xl tracking-tight">Hugging Face</span>
+                    </div>
+                    
+                    <!-- Desktop Menu -->
+                    <div class="hidden md:flex space-x-6 text-sm font-medium text-gray-600">
+                        <a href="#" class="hover:text-black">Models</a>
+                        <a href="#" class="hover:text-black">Datasets</a>
+                        <a href="#" class="text-black border-b-2 border-yellow-400 pb-5 pt-5">Spaces</a>
+                        <a href="#" class="hover:text-black">Docs</a>
+                        <a href="#" class="hover:text-black">Solutions</a>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <div class="relative hidden sm:block">
+                        <input type="text" id="globalSearch" placeholder="Search models, datasets, users..." class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-yellow-400 focus:border-yellow-400 block w-64 pl-4 p-2">
+                    </div>
+                    <div class="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center text-xs font-bold text-gray-600 cursor-pointer">JS</div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        
+        <!-- Header Section -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Spaces</h1>
+            <p class="text-gray-600 text-lg">Discover amazing ML apps made by the community.</p>
+        </div>
+
+        <!-- Filters and Sort -->
+        <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+            <!-- Left: Quick Filters -->
+            <div class="flex gap-2 overflow-x-auto pb-2 w-full md:w-auto">
+                <button onclick="filterSpaces('all')" class="px-4 py-1.5 rounded-full bg-black text-white text-sm font-medium hover:opacity-80 transition">🔥 Trending</button>
+                <button onclick="filterSpaces('Gradio')" class="px-4 py-1.5 rounded-full bg-white border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-50 transition">Gradio</button>
+                <button onclick="filterSpaces('Streamlit')" class="px-4 py-1.5 rounded-full bg-white border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-50 transition">Streamlit</button>
+                <button onclick="filterSpaces('Docker')" class="px-4 py-1.5 rounded-full bg-white border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-50 transition">Docker</button>
+            </div>
+
+            <!-- Right: Search Spaces -->
+            <div class="relative w-full md:w-64">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </span>
+                <input type="text" id="spaceSearch" onkeyup="searchSpaces()" placeholder="Filter by name..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent text-sm">
+            </div>
+        </div>
+
+        <!-- Spaces Grid -->
+        <div id="spacesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Cards will be injected here by JS -->
+        </div>
+
+        <!-- Loading State (Hidden by default) -->
+        <div id="loading" class="hidden text-center py-12">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-yellow-400 border-t-transparent"></div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-auto">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center gap-2 mb-4 md:mb-0">
+                <div class="text-2xl">🤗</div>
+                <span class="font-semibold text-gray-900">Hugging Face</span>
+            </div>
+            <div class="flex space-x-6 text-gray-500 text-sm">
+                <a href="#" class="hover:text-gray-900">TOS</a>
+                <a href="#" class="hover:text-gray-900">Privacy</a>
+                <a href="#" class="hover:text-gray-900">About</a>
+                <a href="#" class="hover:text-gray-900">Jobs</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Data Simulation
+        const spacesData = [
+            {
+                id: 1,
+                title: "Illusion Diffusion",
+                author: "AP123",
+                avatar: "👨‍💻",
+                likes: "12.5k",
+                sdk: "Gradio",
+                desc: "Generate stunning optical illusion art with Stable Diffusion.",
+                thumbClass: "thumb-1",
+                emoji: "🌀"
+            },
+            {
+                id: 2,
+                title: "Llama-2-70b-Chat",
+                author: "meta-llama",
+                avatar: "🦙",
+                likes: "8.2k",
+                sdk: "Gradio",
+                desc: "Chat with the state-of-the-art open source LLM.",
+                thumbClass: "thumb-2",
+                emoji: "💬"
+            },
+            {
+                id: 3,
+                title: "MusicGen",
+                author: "facebook",
+                avatar: "📘",
+                likes: "5.4k",
+                sdk: "Gradio",
+                desc: "Turn text descriptions into high-quality audio samples.",
+                thumbClass: "thumb-3",
+                emoji: "🎵"
+            },
+            {
+                id: 4,
+                title: "QR Code AI Art",
+                author: "huggingface",
+                avatar: "🤗",
+                likes: "22k",
+                sdk: "Gradio",
+                desc: "Create artistic QR codes that actually scan.",
+                thumbClass: "thumb-4",
+                emoji: "🔳"
+            },
+            {
+                id: 5,
+                title: "Background Remover",
+                author: "xennon",
+                avatar: "🦄",
+                likes: "3.1k",
+                sdk: "Streamlit",
+                desc: "Remove backgrounds from images instantly.",
+                thumbClass: "thumb-5",
+                emoji: "✂️"
+            },
+            {
+                id: 6,
+                title: "Voice Clone Pro",
+                author: "audio-wizard",
+                avatar: "🧙‍♂️",
+                likes: "1.9k",
+                sdk: "Docker",
+                desc: "Clone voices with just 3 seconds of audio.",
+                thumbClass: "thumb-6",
+                emoji: "🎙️"
+            },
+            {
+                id: 7,
+                title: "Code Llama Playground",
+                author: "codelife",
+                avatar: "💻",
+                likes: "4.5k",
+                sdk: "Gradio",
+                desc: "Generate code snippets in Python, JS, and more.",
+                thumbClass: "thumb-1",
+                emoji: "📟"
+            },
+            {
+                id: 8,
+                title: "Stable Video",
+                author: "stabilityai",
+                avatar: "🌊",
+                likes: "9.8k",
+                sdk: "Gradio",
+                desc: "Text to video generation model demo.",
+                thumbClass: "thumb-3",
+                emoji: "🎥"
+            }
+        ];
+
+        const grid = document.getElementById('spacesGrid');
+        let currentFilter = 'all';
+
+        function renderSpaces(data) {
+            grid.innerHTML = '';
+            
+            if(data.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-10 text-gray-500">No spaces found matching your criteria.</div>`;
+                return;
+            }
+
+            data.forEach(space => {
+                const card = document.createElement('div');
+                card.className = "bg-white border border-gray-200 rounded-xl overflow-hidden cursor-pointer card-hover flex flex-col h-full transition-all duration-200";
+                
+                // Determine Badge Color
+                const badgeClass = `sdk-badge-${space.sdk.toLowerCase()}`;
+
+                card.innerHTML = `
+                    <div class="h-32 w-full ${space.thumbClass} relative flex items-center justify-center">
+                        <span class="text-6xl drop-shadow-md filter">${space.emoji}</span>
+                        <div class="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded backdrop-blur-sm">
+                            ❤️ ${space.likes}
+                        </div>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <div class="flex items-center gap-2 mb-2">
+                            <div class="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-sm border border-gray-200">${space.avatar}</div>
+                            <span class="text-sm text-gray-500 hover:underline">${space.author}</span>
+                        </div>
+                        <h3 class="font-bold text-gray-900 text-lg leading-tight mb-1">${space.title}</h3>
+                        <p class="text-gray-500 text-sm line-clamp-2 mb-4 flex-grow">${space.desc}</p>
+                        
+                        <div class="flex items-center justify-between mt-auto pt-2 border-t border-gray-50">
+                            <span class="text-xs font-mono px-2 py-0.5 rounded ${badgeClass}">${space.sdk}</span>
+                            <span class="text-xs text-gray-400">Updated 2h ago</span>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterSpaces(sdk) {
+            currentFilter = sdk;
+            const searchVal = document.getElementById('spaceSearch').value.toLowerCase();
+            
+            let filtered = spacesData;
+
+            // Apply SDK Filter
+            if (sdk !== 'all') {
+                filtered = filtered.filter(s => s.sdk === sdk);
+            }
+
+            // Apply Search Filter
+            if (searchVal) {
+                filtered = filtered.filter(s => 
+                    s.title.toLowerCase().includes(searchVal) || 
+                    s.author.toLowerCase().includes(searchVal)
+                );
+            }
+
+            renderSpaces(filtered);
+        }
+
+        function searchSpaces() {
+            filterSpaces(currentFilter);
+        }
+
+        // Initial Render
+        renderSpaces(spacesData);
+
+    </script>
+</body>
+</html>
